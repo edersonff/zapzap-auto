@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Status {
+  active
+  inactive
+  pending
+  error
+}
+
+model User {
+  id Int @id @default(autoincrement())
+
+  name     String @db.VarChar(100)
+  email    String @unique @db.VarChar(100)
+  phone    String @unique @db.VarChar(20)
+  password String
+
+  whatsapps Whatsapp[]
+  chatbots  Chatbot[]
+  options   Options[]
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Schedule  Schedule[]
+}
+
+model Plan {
+  id Int @id @default(autoincrement())
+
+  name        String @db.VarChar(100)
+  description String @db.Text
+  price       Float
+  status      Status
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Subscription {
+  id Int @id @default(autoincrement())
+
+  status Status
+
+  expiredAt DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Chatbot {
+  id Int @id @default(autoincrement())
+
+  about        String @db.Text
+  requirements String @db.Text
+  objectives   String @db.Text
+  examples     String @db.Text
+  additional   String @db.Text
+
+  status Status
+
+  whatsapps Whatsapp[]
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Schedule  Schedule[]
+}
+
+model Whatsapp {
+  id Int @id @default(autoincrement())
+
+  identity String @unique @db.VarChar(32)
+  number   String @unique @db.VarChar(20)
+  status   Status
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  chatbotId Int
+  chatbot   Chatbot @relation(fields: [chatbotId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Options {
+  id Int @id @default(autoincrement())
+
+  onlyFirstMessage     Boolean @default(true)
+  onlyUnreadMessages   Boolean @default(true)
+  sendMailOnErrors     Boolean @default(false)
+  sendWhatsappOnErrors Boolean @default(false)
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Schedule {
+  id Int @id @default(autoincrement())
+
+  message String   @db.Text
+  time    DateTime
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  chatbotId Int
+  chatbot   Chatbot @relation(fields: [chatbotId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

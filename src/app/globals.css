@@ -1,0 +1,157 @@
+@import "preflight.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+}
+
+html,
+body {
+  font-family: var(--font-inter);
+  scroll-behavior: smooth;
+}
+
+body {
+}
+
+@layer base {
+  button {
+    @apply bg-inherit text-inherit;
+  }
+
+  p {
+    @apply leading-[2] tracking-[0.08em];
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-merriweather);
+  }
+
+  input,
+  textarea {
+    @apply outline-none;
+  }
+
+  img {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+  }
+
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+}
+
+@layer components {
+  .content {
+    @apply max-w-[1352px] mx-auto;
+  }
+
+  .absolute-full {
+    @apply w-full h-full absolute top-0 left-0;
+  }
+
+  .fixed-full {
+    @apply w-full h-full fixed top-0 left-0;
+  }
+
+  .unselectable {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+
+  .undraggable {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+  }
+}
+
+*:has(> .content) {
+  @apply small:px-4 md:px-12 lg:px-24 xl:px-36;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px rgb(197 37 211/0.25) inset;
+  box-shadow: 0 0 0 30px rgb(197 37 211/0.25) inset;
+  @apply border-primary font-bold;
+}
+
+.form button,
+.form .MuiInput-root,
+.form .MuiInputBase-root,
+.form .MuiSelect-root {
+  @apply w-main-4;
+}
+
+.form .MuiInput-root:has(input:required)::after,
+.form .MuiSelect-root:has(input:required)::after,
+.form .MuiInputBase-root:has(input:required)::after {
+  content: "*";
+  @apply text-red-500 text-xl absolute right-1 -top-1;
+}
+.form .MuiInput-root,
+.form .MuiSelect-root,
+.form .MuiInputBase-root {
+  @apply relative;
+}
+
+::selection {
+  @apply bg-black/80 text-white;
+}
+
+.colorize-white {
+  display: inline-block;
+  background-color: white;
+  -webkit-mask-size: 95%;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
+@keyframes Spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: Spinner 1s linear infinite;
+}
+
+button.shadow{
+  box-shadow: 0.25rem 0.25rem 0 0rem #171F38;
+}
+
+button.shadow:active {
+  box-shadow: 0 0 0 0rem #171F38;
+  transform: translateY(0.25rem) translateX(0.25rem);
+}
+
+button.shadow-anim:active {
+  transform: translateY(0.25rem) translateX(0.25rem);
+}
