@@ -1,3 +1,5 @@
+import path from "path";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -8,21 +10,24 @@ const nextConfig = {
       },
     ],
   },
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    config.plugins.push(
-      new webpack.DefinePlugin({
-        "process.env.FLUENTFFMPEG_COV": false,
-      })
-    );
-
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve = {
+        ...config.resolve,
+        fallback: {
+          ...config.resolve.fallback,
+          fs: false,
+        },
+      };
+    }
+    config.module = {
+      ...config.module,
+      exprContextCritical: false,
+    };
     return config;
   },
   experimental: {
-    serverComponentsExternalPackages: [
-      "puppeteer-extra",
-      "puppeteer-extra-plugin-stealth",
-      "puppeteer-extra-plugin-recaptcha",
-    ],
+    serverComponentsExternalPackages: ["pino", "pino-pretty"],
   },
 };
 

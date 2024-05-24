@@ -1,18 +1,18 @@
 "use client";
 
-import { UserStoreContext, useUserStore } from "@/store/user";
-import { useRef } from "react";
+import Loader from "@/components/common/Loader";
+import { useEffect, useState } from "react";
 
 export default function HydrationProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const user = useRef(useUserStore()).current;
+  const [hydrated, setHydrated] = useState(false);
 
-  return (
-    <UserStoreContext.Provider value={user}>
-      {children}
-    </UserStoreContext.Provider>
-  );
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  return <>{hydrated ? children : <Loader />}</>;
 }

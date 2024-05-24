@@ -14,18 +14,18 @@ import { RiRobot2Fill } from "react-icons/ri";
 import { TbFileDescription } from "react-icons/tb";
 export default function Home() {
   return (
-    <div>
+    <div className="bg-white">
       <div className="bg-neutral-100 pt-11">
         <Navbar />
 
         <div className="w-full py-32">
           <div className="content flex small:flex-col small:justify-center justify-between items-center gap-20">
             <div className="mb-20">
-              <h1 className="text-7xl small:text-5xl text-primary mb-7">
-                <span className="text-secondary">Whatsapp </span>
+              <h1 className="text-7xl small:text-5xl text-primary-home mb-7">
+                <span className="text-secondary-home">Whatsapp </span>
                 Automatizado
               </h1>
-              <p className="text-neutral-500 text-xs small:text-small leading-[200%] mb-12">
+              <p className="text-neutral-500 text-xs font-medium small:text-small leading-[200%] mb-12">
                 Melhore o seu Whatsapp com o <b>Zap Auto</b> e transforme-o em
                 uma ferramenta de marketing poderosa. Com ferramentas de{" "}
                 <b>automação por IA</b>, você pode atender seus clientes de
@@ -68,9 +68,9 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="py-14 border-y-[6px] border-black text-white bg-gradient-to-tr from-primary to-blue-900">
+      <div className="py-14 border-y-[6px] border-black text-white bg-gradient-to-tr from-primary-home to-blue-900">
         <div className="content flex flex-col items-center gap-10">
-          <div className="text-center relative">
+          <div className="text-center relative mb-4">
             <div className="flex-center mb-3">
               <h2 className="text-[28px] font-bold">Inicie ainda hoje!</h2>
               <Image
@@ -81,7 +81,7 @@ export default function Home() {
                 height={30}
               />
             </div>
-            <p className="text-small max-w-main-4">
+            <p className="text-small font-medium max-w-main-4">
               Com apenas 3 passos você pode começar a usar o <b>Zap Auto</b>{" "}
               para conectar ao <b>Whatsapp</b>
             </p>
@@ -132,9 +132,9 @@ export default function Home() {
 
       <div className="w-full mt-36 mb-44">
         <div className="content">
-          <div className="flex-center flex-col text-primary">
+          <div className="flex-center flex-col text-primary-home">
             <div className="text-center relative mb-28">
-              <p className="text-small">Os recursos</p>
+              <p className="text-small font-medium">Os recursos</p>
               <h2 className="text-[32px] font-black">
                 Os Poderosos Recursos da{" "}
                 <span className="font-normal">Zap Auto</span>
@@ -148,7 +148,7 @@ export default function Home() {
                   height={12}
                 />
               </div>
-              <p className="text-small">
+              <p className="text-small font-medium">
                 Experimente uso ilimitado com preço fixo
               </p>
 
@@ -256,13 +256,13 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="py-14 border-y-[6px] border-black text-white bg-gradient-to-tr from-blue-900 to-primary">
+      <div className="py-14 border-y-[6px] border-black text-white bg-gradient-to-tr from-blue-900 to-primary-home">
         <div className="content flex flex-col items-center gap-10">
           <div className="text-center relative">
             <div className="flex-center mb-3">
               <h2 className="text-[28px] font-bold">Inicie ainda hoje!</h2>
             </div>
-            <p className="text-small">
+            <p className="text-small font-medium">
               Após a conexão, você pode enviar sua primeira mensagem do{" "}
               <b>WhatsApp</b> via API com o <b>idioma</b> de sua preferência.
             </p>
@@ -274,9 +274,9 @@ export default function Home() {
 
       <div className="w-full mt-32 mb-44">
         <div className="content">
-          <div className="flex-center flex-col text-primary">
+          <div className="flex-center flex-col text-primary-home">
             <div className="text-center relative mb-16">
-              <p className="text-small">Planos</p>
+              <p className="text-small font-medium">Planos</p>
               <h2 className="text-[26px] font-bold max-w-main-5">
                 Nossos planos que atendem a todas as suas necessidades
               </h2>
@@ -308,9 +308,9 @@ export default function Home() {
       </div>
       <div className="w-full my-24">
         <div className="content">
-          <div className="flex-center flex-col text-primary">
+          <div className="flex-center flex-col text-primary-home">
             <div className="text-center relative mb-20">
-              <p className="text-small">Perguntas frequentes</p>
+              <p className="text-small font-medium">Perguntas frequentes</p>
               <h2 className="text-[26px] font-bold">
                 Tire suas duvidas sobre nossa aplicação
               </h2>

@@ -1,7 +1,6 @@
 import Image from "@/components/Image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
-import { links } from "./links";
 import Nav from "./Nav";
 import { AiOutlineMenu } from "react-icons/ai";
 import { IoSearchOutline } from "react-icons/io5";
@@ -31,16 +30,18 @@ function NavbarItem({
             height={28}
             layout="fixed"
           />
-          <h2 className="font-title font-bold text-primary">Zap Auto</h2>
+          <h2 className="font-title font-bold text-primary-home">Zap Auto</h2>
         </Link>
         <div className="flex items-center gap-6">
           <Link
-            href="/register"
-            className="text-xs small:hidden font-semibold p-[10px] hover:text-primary/75 transition-all duration-200 rounded-md"
+            href="/auth/signup"
+            className="text-xs small:hidden font-semibold p-[10px] hover:text-primary-home/75 transition-all duration-200 rounded-md"
           >
             Comece de graça
           </Link>
-          <Button className="min-w-main-2">Entrar na plataforma</Button>
+          <Link href="/auth/signin">
+            <Button className="min-w-main-2">Entrar na plataforma</Button>
+          </Link>
         </div>
       </div>
     </div>

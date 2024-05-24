@@ -15,7 +15,7 @@ export default function Feature({
         {icon}
         <h3 className="text-xl font-black">{title}</h3>
       </div>
-      <p className="text-small">{children}</p>
+      <p className="text-small font-medium">{children}</p>
     </div>
   );
 }

@@ -17,18 +17,23 @@ enum Status {
 model User {
   id Int @id @default(autoincrement())
 
-  name     String @db.VarChar(100)
-  email    String @unique @db.VarChar(100)
-  phone    String @unique @db.VarChar(20)
-  password String
+  name     String  @db.VarChar(100)
+  email    String  @unique @db.VarChar(100)
+  phone    String? @unique @db.VarChar(20)
+  image    String? @db.VarChar(130)
+  password String?
 
-  whatsapps Whatsapp[]
-  chatbots  Chatbot[]
-  options   Options[]
+  subscription  Subscription?
+  whatsapps     Whatsapp[]
+  chatbots      Chatbot[]
+  options       Options[]
+  bulks         Bulk[]
+  conversations Conversation[]
 
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  Schedule  Schedule[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
 }
 
 model Plan {
@@ -39,8 +44,12 @@ model Plan {
   price       Float
   status      Status
 
+  subscriptions Subscription[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("plans")
 }
 
 model Subscription {
@@ -50,46 +59,103 @@ model Subscription {
 
   expiredAt DateTime
 
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id])
+
+  planId Int
+  plan   Plan @relation(fields: [planId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("subscriptions")
 }
 
 model Chatbot {
   id Int @id @default(autoincrement())
 
-  about        String @db.Text
-  requirements String @db.Text
-  objectives   String @db.Text
-  examples     String @db.Text
-  additional   String @db.Text
+  name String? @db.VarChar(100)
+
+  about      String  @db.Text
+  objectives String  @db.Text
+  examples   String? @db.Text
+  finalize   String? @db.Text
 
   status Status
 
-  whatsapps Whatsapp[]
+  whatsapps     Whatsapp[]
+  conversations Conversation[]
 
   userId Int
   user   User @relation(fields: [userId], references: [id])
 
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  Schedule  Schedule[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("chatbots")
 }
 
 model Whatsapp {
   id Int @id @default(autoincrement())
 
-  identity String @unique @db.VarChar(32)
-  number   String @unique @db.VarChar(20)
-  status   Status
+  number String  @unique @db.VarChar(20)
+  qr     String? @db.Text
+  status Status
+
+  conversations Conversation[]
+  bulks         Bulk[]
 
   userId Int
   user   User @relation(fields: [userId], references: [id])
 
-  chatbotId Int
-  chatbot   Chatbot @relation(fields: [chatbotId], references: [id])
+  chatbotId Int?
+  chatbot   Chatbot? @relation(fields: [chatbotId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("whatsapps")
+}
+
+model Conversation {
+  id Int @id @default(autoincrement())
+
+  to String @db.VarChar(32)
+
+  messages Message[]
+
+  finilizedAt DateTime?
+
+  whatsappId Int
+  whatsapp   Whatsapp @relation(fields: [whatsappId], references: [id])
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  chatbotId Int?
+  chatbot   Chatbot? @relation(fields: [chatbotId], references: [id])
+
+  BulkId Int?
+  bulk   Bulk? @relation(fields: [BulkId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("conversations")
+}
+
+model Message {
+  id Int @id @default(autoincrement())
+
+  message String @db.Text
+  answer  String @db.Text
+
+  conversationId Int
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@map("messages")
 }
 
 model Options {
@@ -105,20 +171,44 @@ model Options {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("options")
 }
 
-model Schedule {
+enum BulkType {
+  now
+  minute
+  hourly
+  daily
+  weekly
+  monthly
+  yearly
+  specific
+}
+
+model Bulk {
   id Int @id @default(autoincrement())
 
-  message String   @db.Text
-  time    DateTime
+  numbers String @db.Text
+  message String @db.Text
+
+  type BulkType
+  time DateTime
+
+  status Status
+
+  conversations Conversation[]
+
+  whatsappId Int
+  whatsapp   Whatsapp @relation(fields: [whatsappId], references: [id])
 
   userId Int
   user   User @relation(fields: [userId], references: [id])
 
-  chatbotId Int
-  chatbot   Chatbot @relation(fields: [chatbotId], references: [id])
+  lastRun DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("bulks")
 }

@@ -1,19 +1,22 @@
 import React from "react";
 import FontProvider from "./font";
-import ThemeProvider from "./theme";
 import StylesProvider from "./styles";
 import HydrationProvider from "./hydration";
 import ReactQueryProvider from "./react-query";
+import SessionProvider from "./session";
+import AlertProvider from "./alert";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <FontProvider>
       <StylesProvider>
-        <ThemeProvider>
-          <HydrationProvider>
-            <ReactQueryProvider>{children}</ReactQueryProvider>
-          </HydrationProvider>
-        </ThemeProvider>
+        <HydrationProvider>
+          <SessionProvider>
+            <AlertProvider>
+              <ReactQueryProvider>{children}</ReactQueryProvider>
+            </AlertProvider>
+          </SessionProvider>
+        </HydrationProvider>
       </StylesProvider>
     </FontProvider>
   );
