@@ -1,8 +1,7 @@
 import React from "react";
-import { links } from "../links";
 import Link from "next/link";
 
-export default function Nav({ label, url }: (typeof links)[0]) {
+export default function Nav({ label, url }: { label: string; url: string }) {
   return (
     <Link
       href={url}

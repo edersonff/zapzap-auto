@@ -9,14 +9,14 @@ export default function ModalProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const modals = useAlertStore((state) => state.modals);
+  const alerts = useAlertStore((state) => state.alerts);
 
   return (
     <>
       <div className="full-fixed z-[99] flex flex-col justify-start p-2 items-end pointer-events-none gap-2">
-        {alerts.map((alert, index) => (
+        {/* {alerts.map((alert, index) => (
           <Modal key={index} message={alert.message} status={alert.status} />
-        ))}
+        ))} */}
       </div>
       {children}
     </>

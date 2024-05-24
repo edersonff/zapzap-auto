@@ -4,7 +4,6 @@ import React, { useMemo } from "react";
 import { BsInstagram, BsTwitter } from "react-icons/bs";
 import { FaFacebook } from "react-icons/fa6";
 import { FaLinkedinIn } from "react-icons/fa";
-import { links } from "../Navbar/links";
 
 export default function Footer() {
   return (

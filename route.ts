@@ -1,10 +1,10 @@
 import { prisma } from "@/db";
 import { NextRequest, NextResponse } from "next/server";
-import { getUser } from "../lib/token";
-import { schemaValidator } from "../lib/schema";
 import { z } from "zod";
 import { Bulk, BulkType, Prisma } from "@prisma/client";
 import * as whatsapp from "wa-sockets";
+import { getUser } from "@/app/api/lib/token";
+import { schemaValidator } from "@/app/api/lib/schema";
 
 export async function GET(req: NextRequest) {
   const {

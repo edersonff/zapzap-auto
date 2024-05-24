@@ -4,7 +4,7 @@ import * as whatsapp from "wa-sockets";
 import { getUser } from "../lib/token";
 import { schemaValidator } from "../lib/schema";
 import { z } from "zod";
-import { initWhatsappListeners } from "../job/startup/route";
+import { initWhatsappListeners } from "./listener";
 
 export async function GET(req: NextRequest) {
   const { limit, page = 1 } = Object.fromEntries(req.nextUrl.searchParams);

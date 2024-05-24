@@ -208,7 +208,7 @@ export default function ConnectWhatsapp() {
   );
 }
 
-export async function UpdateWhatsapp({
+async function UpdateWhatsapp({
   editing,
   setEditing,
 }: {

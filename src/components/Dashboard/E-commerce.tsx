@@ -12,9 +12,7 @@ import Loader from "../common/Loader";
 import { IoChatboxEllipses } from "react-icons/io5";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { RiMedalFill, RiRobot2Fill } from "react-icons/ri";
-import { useGetSubscriptionQuery } from "@/services/subscription/getConversationQuery";
 import { useSession } from "next-auth/react";
-import { UserSession } from "@/app/api/auth/[...nextauth]/route";
 
 const ECommerce: React.FC = () => {
   const { data: chatbots, isLoading: isLoadingChat } =

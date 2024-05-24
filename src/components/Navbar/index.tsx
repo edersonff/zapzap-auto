@@ -1,9 +1,6 @@
 import Image from "@/components/Image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
-import Nav from "./Nav";
-import { AiOutlineMenu } from "react-icons/ai";
-import { IoSearchOutline } from "react-icons/io5";
 import Button from "../Button";
 
 export default function Navbar() {
