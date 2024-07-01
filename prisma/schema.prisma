@@ -29,6 +29,7 @@ model User {
   options       Options[]
   bulks         Bulk[]
   conversations Conversation[]
+  usages        Usage[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -127,16 +128,16 @@ model Conversation {
   finilizedAt DateTime?
 
   whatsappId Int
-  whatsapp   Whatsapp @relation(fields: [whatsappId], references: [id])
+  whatsapp   Whatsapp @relation(fields: [whatsappId], references: [id], onDelete: Cascade)
 
   userId Int
   user   User @relation(fields: [userId], references: [id])
 
   chatbotId Int?
-  chatbot   Chatbot? @relation(fields: [chatbotId], references: [id])
+  chatbot   Chatbot? @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
 
-  BulkId Int?
-  bulk   Bulk? @relation(fields: [BulkId], references: [id])
+  bulkId Int?
+  bulk   Bulk? @relation(fields: [bulkId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -151,7 +152,7 @@ model Message {
   answer  String @db.Text
 
   conversationId Int
-  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
@@ -167,7 +168,7 @@ model Options {
   sendWhatsappOnErrors Boolean @default(false)
 
   userId Int
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -200,7 +201,7 @@ model Bulk {
   conversations Conversation[]
 
   whatsappId Int
-  whatsapp   Whatsapp @relation(fields: [whatsappId], references: [id])
+  whatsapp   Whatsapp @relation(fields: [whatsappId], references: [id], onDelete: Cascade)
 
   userId Int
   user   User @relation(fields: [userId], references: [id])
@@ -211,4 +212,21 @@ model Bulk {
   updatedAt DateTime @updatedAt
 
   @@map("bulks")
+}
+
+model Usage {
+  id Int @id @default(autoincrement())
+
+  month Int
+  year  Int
+
+  totalMessages Int
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("usages")
 }

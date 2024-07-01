@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/Image";
 import Input from "@/components/Input";
 import { MdOutlineLock, MdOutlineMailOutline } from "react-icons/md";
 import { useForm } from "react-hook-form";
@@ -38,30 +38,30 @@ const SignIn: React.FC = () => {
 
   return (
     <div className="flex-center min-h-svh p-12 bg-whiten dark:bg-boxdark-2">
-      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div className="rounded-sm small:x-[w-full,p-5] border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
             <div className="px-26 py-17.5 text-center">
               <Link className="mb-5.5 inline-block" href="/dashboard">
                 <Image
                   className="hidden dark:block"
-                  src={"/merlin/logo.svg"}
+                  src={"/merlin/logo-horizontal.png"}
                   alt="Logo"
                   width={176}
                   height={32}
                 />
                 <Image
                   className="dark:hidden"
-                  src={"/merlin/logo.svg"}
+                  src={"/merlin/logo-horizontal.png"}
                   alt="Logo"
                   width={176}
                   height={32}
                 />
               </Link>
 
-              <p className="2xl:px-20 text-sm">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit
-                suspendisse.
+              <p className="2xl:px-20 text-small">
+                Acesse a sua conta para gerenciar o seu <b>WhatsApp</b>{" "}
+                conectado com a <b>Zap Auto</b>.
               </p>
 
               <span className="mt-15 inline-block">
@@ -192,10 +192,10 @@ const SignIn: React.FC = () => {
           <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
             <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
               <span className="mb-1.5 block font-medium text-sm">
-                Start for free
+                Inicie gratuitamente
               </span>
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-                Sign In to TailAdmin
+                Login da Zap Auto
               </h2>
 
               <form onSubmit={handleSubmit(onSubmit)}>
@@ -222,7 +222,7 @@ const SignIn: React.FC = () => {
                 <div className="mb-5 mt-2">
                   <input
                     type="submit"
-                    value="Sign In"
+                    value="Login"
                     className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                   />
                 </div>
@@ -265,14 +265,17 @@ const SignIn: React.FC = () => {
                       </defs>
                     </svg>
                   </span>
-                  Sign in with Google
+                  <span>Entrar com Google</span>
                 </button>
 
                 <div className="mt-6 text-center text-sm">
                   <p>
-                    Don’t have any account?{" "}
-                    <Link href="/auth/signup" className="text-primary">
-                      Sign Up
+                    Ainda não tem uma conta?{" "}
+                    <Link
+                      href="/auth/signup"
+                      className="text-primary font-semibold"
+                    >
+                      Registre-se
                     </Link>
                   </p>
                 </div>

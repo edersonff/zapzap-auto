@@ -123,6 +123,7 @@ export default function ChatbotCreate() {
                   required: true,
                   onChange: (e) => setValue("about", e.target.value),
                   name: "chatbot-about",
+                  maxLength: 65535,
                 }}
                 label="Sobre sua Empresa/Loja"
                 className="min-h-[200px]"
@@ -137,6 +138,7 @@ export default function ChatbotCreate() {
                 `,
                   onChange: (e) => setValue("objectives", e.target.value),
                   name: "chatbot-objectives",
+                  maxLength: 65535,
                 }}
                 label="Qual o objetivo do Chatbot"
                 className="min-h-[200px]"
@@ -152,6 +154,7 @@ export default function ChatbotCreate() {
 - Quando a IA não conseguir responder a pergunta do cliente`,
                   onChange: (e) => setValue("finalize", e.target.value),
                   name: "chatbot-finalize",
+                  maxLength: 65535,
                 }}
                 className="min-h-[200px]"
                 label="Quando a IA deve finalizar a conversa"

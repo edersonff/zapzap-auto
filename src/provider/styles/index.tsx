@@ -2,11 +2,6 @@ import React from "react";
 
 import "../../app/globals.css";
 import { CssVarsProvider } from "@mui/joy";
-import dynamic from "next/dynamic";
-
-const WorldMap: any = dynamic(() => import("./WorldMap"), {
-  ssr: false,
-});
 
 export default function StylesProvider({
   children,
@@ -15,7 +10,7 @@ export default function StylesProvider({
 }) {
   return (
     <CssVarsProvider>
-      <WorldMap>{children}</WorldMap>
+      <>{children}</>
     </CssVarsProvider>
   );
 }

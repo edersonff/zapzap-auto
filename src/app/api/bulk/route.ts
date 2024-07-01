@@ -5,6 +5,7 @@ import { schemaValidator } from "../lib/schema";
 import { z } from "zod";
 import { Bulk, BulkType, Prisma } from "@prisma/client";
 import * as whatsapp from "wa-sockets";
+import { MessageHandler } from "../lib/message";
 
 export async function GET(req: NextRequest) {
   const {
@@ -87,7 +88,7 @@ export async function POST(req: NextRequest) {
   const { numbers, whatsappId, message, type, time } = body;
 
   if (type === "now") {
-    await nowBulk({
+    return await nowBulk({
       numbers,
       message,
       whatsappId,
@@ -123,11 +124,11 @@ async function nowBulk(bulk: Prisma.BulkUncheckedCreateInput) {
     })
   );
 
-  await prisma.bulk.create({
+  bulk = await prisma.bulk.create({
     data: bulk,
   });
 
-  const whatsapps = await prisma.whatsapp.findFirst({
+  const whatsappFound = await prisma.whatsapp.findFirstOrThrow({
     where: {
       id: bulk.whatsappId,
     },
@@ -150,11 +151,64 @@ async function nowBulk(bulk: Prisma.BulkUncheckedCreateInput) {
       );
 
       if (!conversation) {
+        const jid = whatsapp.phoneToJid({
+          to: phone,
+        });
+
+        conversation = await prisma.conversation.create({
+          data: {
+            userId: bulk.userId,
+            whatsappId: bulk.whatsappId,
+            to: jid,
+            bulkId: bulk.id,
+          },
+        });
       }
+
+      const messageHandler = new MessageHandler(
+        {
+          ...bulk,
+          whatsapp: whatsappFound,
+        },
+        phone
+      );
+
+      await messageHandler.send();
     }
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    await prisma.bulk.update({
+      where: {
+        id: bulk.id,
+      },
+      data: {
+        status: "error",
+      },
+    });
+
+    return NextResponse.json(
+      {
+        error: [
+          {
+            message: error?.message,
+          },
+        ],
+      },
+      {
+        status: 500,
+      }
+    );
   }
 
-  return;
+  await prisma.bulk.update({
+    where: {
+      id: bulk.id,
+    },
+    data: {
+      status: "active",
+    },
+  });
+
+  return NextResponse.json({
+    success: true,
+  });
 }

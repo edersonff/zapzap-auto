@@ -1,7 +1,7 @@
 "use client";
 
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import Image from "next/image";
+import Image from "@/components/Image";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Link from "next/link";
@@ -33,6 +33,7 @@ const Profile = () => {
                     session?.user?.image?.replace("s96", "s240") ||
                     "/images/placeholder/avatar.svg"
                   }
+                  loading="eager"
                   width={140}
                   height={140}
                   className="object-cover rounded-full"

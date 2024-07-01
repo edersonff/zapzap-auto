@@ -1,7 +1,8 @@
 import { useGetCountQuery } from "@/services/count/getConversationQuery";
+import { useGetUsageQuery } from "@/services/user/getUserQuery";
 import { CircularProgress } from "@mui/joy";
 import { ApexOptions } from "apexcharts";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 
 interface ChartThreeState {
@@ -52,19 +53,23 @@ const options: ApexOptions = {
 };
 
 const ChartThree = ({ planId }: { planId?: number }) => {
-  const { data: message } = useGetCountQuery("message");
+  const { data: usage } = useGetUsageQuery();
 
-  const [state, setState] = useState<ChartThreeState>({
-    series: !planId ? [Number(message), 30000] : [Number(message)],
-  });
+  const state = useMemo(() => {
+    let limit;
 
-  const handleReset = () => {
-    setState((prevState) => ({
-      ...prevState,
-      series: [65, 34, 12, 56],
-    }));
-  };
-  handleReset;
+    if (!planId) {
+      limit = 10000;
+    }
+
+    if (!usage?.totalMessages) {
+      return { series: [0] };
+    }
+
+    const series = limit ? [usage.totalMessages, limit] : [usage.totalMessages];
+
+    return { series };
+  }, [usage, planId]);
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-5">
@@ -92,7 +97,7 @@ const ChartThree = ({ planId }: { planId?: number }) => {
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-primary"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> Mensagens Enviadas </span>
-              <span> {message} </span>
+              <span> {usage?.totalMessages} </span>
             </p>
           </div>
         </div>
@@ -101,7 +106,7 @@ const ChartThree = ({ planId }: { planId?: number }) => {
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#6577F3]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> Limite de Mensagens </span>
-              <span> {planId ? "Ilimitado" : "30000"} </span>
+              <span> {planId ? "Ilimitado" : "10000"} </span>
             </p>
           </div>
         </div>

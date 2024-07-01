@@ -3,18 +3,16 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s - Gerenciamento de Vídeos de memes",
-    default: "Dropshipping - Gerenciamento de Vídeos de memes",
+    template: "%s - ZapAuto",
+    default: "ZapAuto - Melhore o seu WhatsApp",
   },
   description:
-    "A Dropshipping oferece soluções de Gerenciamento de Vídeos de memes. Nossa equipe especializada desenvolve ferramentas adaptadas às necessidades específicas de cada negócio. Contate-nos para descobrir como podemos ajudar a impulsionar o seu sucesso.",
+    "Transforme o seu Whatsapp em uma maquina de vendas com o Zap Auto. Automatize o atendimento e venda mais com ferramentas de automação por IA.",
   alternates: {
     canonical: process.env.NEXT_PUBLIC_BASE_URL,
     languages: {
       pt: "/",
-      en: "/en",
       "pt-BR": "/",
-      "en-US": "/en",
     },
   },
 
@@ -22,43 +20,25 @@ export const metadata: Metadata = {
     type: "website",
     url: process.env.NEXT_PUBLIC_BASE_URL,
     title: {
-      template: "%s - Gerenciamento de Vídeos de memes",
-      default: "Dropshipping - Gerenciamento de Vídeos de memes",
+      template: "%s - ZapAuto",
+      default: "ZapAuto - Melhore o seu WhatsApp",
     },
     description:
-      "A Dropshipping oferece soluções de Gerenciamento de Vídeos de memes. Nossa equipe especializada desenvolve ferramentas adaptadas às necessidades específicas de cada negócio. Contate-nos para descobrir como podemos ajudar a impulsionar o seu sucesso.",
+      "Transforme o seu Whatsapp em uma maquina de vendas com o Zap Auto. Automatize o atendimento e venda mais com ferramentas de automação por IA.",
     images: [
       {
         url: "/og/image.jpg",
         width: 1280,
         height: 720,
-        alt: "Zap Auto Tecnologia",
+        alt: "ZapZap Auto",
       },
     ],
   },
 
-  applicationName: "Zap Auto Tecnologia",
+  applicationName: "Zap Auto",
   referrer: "origin-when-cross-origin",
-  creator: "Zap Auto Tecnologia",
-  keywords: [
-    "Dublagem de Vídeos",
-    "Gerenciamento de Vídeos",
-    "Gerenciamento de Redes Sociais",
-    "Gerenciamento de Socials",
-    "Integração com Redes Sociais",
-    "Integração com APIs",
-    "Integração com TikTok",
-    "Integração com YouTube",
-    "Integração com Instagram",
-    "Integração com Pinterest",
-    "Integração com Twitter",
-    "Integração com Snapchat",
-    "Integração com Telegram",
-    "Integração com Meta",
-    "Gerenciamento de Comentários",
-    "Respostas Automáticas",
-    "Análise de Dados",
-  ],
+  creator: "Merlin",
+  keywords: [],
   robots: {
     index: true,
     follow: true,

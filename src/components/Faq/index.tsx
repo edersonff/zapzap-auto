@@ -9,7 +9,7 @@ export default function Faq({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="border-b border-black w-main-10">
+    <div className="border-b border-black w-full max-w-main-10">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex justify-between items-center w-full px-4 py-3 text-left"

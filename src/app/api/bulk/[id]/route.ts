@@ -31,33 +31,27 @@ export async function PUT(
     {
       numbers: z
         .string()
-        .max(65535, "Os números de envio devem ter no máximo 65535 caracteres")
-        .optional(),
+        .min(1, { message: "Os números de envio são obrigatórios" })
+        .max(65535, "Os números de envio devem ter no máximo 65535 caracteres"),
       message: z
         .string()
-        .max(65535, "A mensagem deve ter no máximo 65535 caracteres")
-        .optional(),
-      type: z
-        .enum(
-          [
-            "now",
-            "daily",
-            "hourly",
-            "minute",
-            "monthly",
-            "specific",
-            "weekly",
-            "yearly",
-          ],
-          { message: "O tipo de envio é inválido" }
-        )
-        .optional(),
+        .min(1, { message: "A mensagem é obrigatória" })
+        .max(65535, "A mensagem deve ter no máximo 65535 caracteres"),
+      whatsappId: z.number().int({ message: "O whatsapp é inválido" }),
+      type: z.enum(
+        [
+          "now",
+          "daily",
+          "hourly",
+          "minute",
+          "monthly",
+          "specific",
+          "weekly",
+          "yearly",
+        ],
+        { message: "O tipo de envio é inválido" }
+      ),
       time: z.string().optional(),
-      status: z
-        .enum(statusType, {
-          message: "Status inválido",
-        })
-        .optional(),
     },
     body
   );

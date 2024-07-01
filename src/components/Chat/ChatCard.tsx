@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/Image";
 import { Chat } from "@/types/chat";
 
 const chatData: Chat[] = [

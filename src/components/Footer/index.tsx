@@ -7,7 +7,7 @@ import { FaLinkedinIn } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="content-container bg-dark text-white mt-10">
+    <footer className="content-container bg-dark text-black mt-[20vh]">
       <div className="mx-auto w-full content p-4 py-6 lg:py-8">
         <div className="md:flex md:justify-between">
           <div className="mb-6 md:mb-0">
@@ -19,17 +19,17 @@ export default function Footer() {
                 className="me-3 undraggable"
                 alt="FlowBite Logo"
               />
-              <span className="self-center text-2xl font-semibold whitespace-nowrap ">
+              <h2 className="self-center text-2xl whitespace-nowrap text-logo">
                 Zap Auto
-              </span>
+              </h2>
             </Link>
           </div>
         </div>
-        <hr className="my-6 border-neutral-200 sm:mx-auto  lg:my-8" />
+        <hr className="my-6 border-neutral-700 sm:mx-auto  lg:my-8" />
         <div className="sm:flex sm:items-center sm:justify-between">
           <p className="text-small">
             © {2022}-{new Date().getFullYear()}{" "}
-            <Link href="/" className="text-neutral-200 hover:underline">
+            <Link href="/" className="text-link hover:underline">
               Zap Auto
             </Link>
             . Todos os direitos reservados.
@@ -67,7 +67,7 @@ export function SocialFooterItem({
     <Link
       target="_blank"
       href={href}
-      className="text-neutral-300 hover:text-neutral-200  ms-5"
+      className="text-neutral-800 hover:text-neutral-600 ms-5"
     >
       {Icon}
       <span className="sr-only">{type} page</span>

@@ -53,6 +53,12 @@ body {
     @apply font-medium;
   }
 
+  a.disabled {
+    cursor: not-allowed;
+    text-decoration: none;
+    opacity: 0.5;
+  }
+
   .flex-center {
     @apply flex justify-center items-center;
   }
@@ -101,6 +107,10 @@ body {
 
 ::selection {
   @apply bg-black/80 text-white;
+}
+
+.dark ::selection {
+  @apply bg-white/80 text-black;
 }
 
 form input:required:invalid {

@@ -12,7 +12,7 @@ import React, {
 } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/Image";
 import SidebarLinkGroup from "./SidebarLinkGroup";
 import { IconType } from "react-icons";
 import { FaWhatsapp } from "react-icons/fa6";
@@ -81,12 +81,12 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
       }`}
     >
       {/* <!-- SIDEBAR HEADER --> */}
-      <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
+      <div className="flex items-center justify-center gap-8 px-6 py-5.5 lg:py-6.5">
         <Link href="/dashboard">
           <Image
             width={176}
             height={32}
-            src={"/merlin/logo.svg"}
+            src={"/merlin/logo-horizontal-branco.png"}
             alt="Logo"
             priority
           />

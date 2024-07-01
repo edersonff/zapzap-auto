@@ -44,7 +44,8 @@ export async function PUT(
       examples: z
         .string()
         .max(65535, "Os exemplos devem ter no máximo 65535 caracteres")
-        .optional(),
+        .optional()
+        .nullable(),
       finalize: z
         .string()
         .max(65535, "O finalizador deve ter no máximo 65535 caracteres")

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/Image";
 
 const DropdownMessage = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -91,11 +91,11 @@ const DropdownMessage = () => {
         }`}
       >
         <div className="px-4.5 py-3">
-          <h5 className="text-sm font-medium text-bodydark2">Messages</h5>
+          <h5 className="text-sm font-medium text-bodydark2">Mensagens</h5>
         </div>
 
         <ul className="flex h-auto flex-col overflow-y-auto">
-          <li>
+          {/* <li>
             <Link
               className="flex gap-4.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
               href="/messages"
@@ -229,7 +229,7 @@ const DropdownMessage = () => {
                 <p className="text-xs">2min ago</p>
               </div>
             </Link>
-          </li>
+          </li> */}
         </ul>
       </div>
       {/* <!-- Dropdown End --> */}

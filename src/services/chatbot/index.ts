@@ -10,7 +10,7 @@ export const chatbotService = {
   find: async (id: number) => await api.get<Chatbot>(`/chatbot/${id}`),
   create: async (chatbot: Partial<Chatbot>) =>
     await api.post<Chatbot>("/chatbot", chatbot),
-  update: async (id: number, chatbot: Partial<Chatbot>) =>
-    await api.put<string>("/chatbot" + id, chatbot),
+  update: async (chatbot: Partial<Chatbot>) =>
+    await api.put<string>("/chatbot/" + chatbot.id, chatbot),
   delete: async (id: number) => await api.delete<string>(`/chatbot/${id}`),
 };

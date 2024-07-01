@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
       id: true,
       to: true,
       chatbotId: true,
-      BulkId: true,
+      bulkId: true,
       userId: true,
       finilizedAt: true,
       whatsappId: true,

@@ -1,124 +1,85 @@
 import { prisma } from "@/db";
 import * as whatsapp from "wa-sockets";
-import { Message } from "@prisma/client";
+import { Whatsapp } from "@prisma/client";
 import { DateTime } from "luxon";
 import { ChatBotCreator } from "../chatbot";
+import { UsageHandler } from "../../lib/usage";
+
+import { Client, LocalAuth, Message } from "whatsapp-web.js";
 
 export function initWhatsappListeners(number?: string) {
   if (number) {
-    whatsapp.startSession(number);
-    prisma.whatsapp
-      .update({
-        where: {
-          number,
-        },
-        data: {
-          status: "pending",
-        },
-      })
-      .then();
-  } else {
-    whatsapp.loadSessionsFromStorage();
+    startWhatsappListener({ number });
+    return;
   }
 
-  function startListeners() {
-    whatsapp.onMessageReceived(onMessage(number));
-
-    whatsapp.onDisconnected(async (sessionId) => {
-      if (number && number !== sessionId) {
-        return;
-      }
-
-      await prisma.whatsapp.update({
-        where: {
-          number: sessionId,
-        },
-        data: {
-          status: "error",
-        },
-      });
-    });
-
-    whatsapp.onConnected(async (sessionId) => {
-      if (number && number !== sessionId) {
-        return;
-      }
-
-      await prisma.whatsapp.update({
-        where: {
-          number: sessionId,
-        },
-        data: {
-          status: "active",
-        },
-      });
-    });
-
-    whatsapp.onQRUpdated(async ({ sessionId, qr }) => {
-      if (number && number !== sessionId) {
-        return;
-      }
-
-      await prisma.whatsapp.update({
-        where: {
-          number: sessionId,
-        },
-        data: {
-          qr,
-        },
-      });
-    });
-  }
-
-  if (!number) {
-    return startListeners();
-  }
-
-  return new Promise<string>((resolve) => {
-    startListeners();
-
-    whatsapp.onQRUpdated(async ({ sessionId, qr }) => {
-      if (sessionId === number) {
-        resolve(qr);
-      }
-
-      await prisma.whatsapp.update({
-        where: {
-          number: sessionId,
-        },
-        data: {
-          qr,
-        },
-      });
+  prisma.whatsapp.findMany().then((whatsapps) => {
+    whatsapps.forEach((whatsapp) => {
+      startWhatsappListener(whatsapp);
     });
   });
 }
 
+async function startWhatsappListener(whatsapp: { number: string }) {
+  const client = new Client({
+    authStrategy: new LocalAuth({
+      dataPath: "sessions",
+      clientId: whatsapp.number,
+    }),
+  });
+
+  client.on("qr", (qr) => {
+    prisma.whatsapp.update({
+      where: {
+        number: whatsapp.number,
+      },
+      data: {
+        qr,
+      },
+    });
+  });
+
+  client.once("authenticated", (session) => {
+    prisma.whatsapp.update({
+      where: {
+        number: whatsapp.number,
+      },
+      data: {
+        status: "active",
+      },
+    });
+  });
+
+  client.once("disconnected", (reason) => {
+    prisma.whatsapp.update({
+      where: {
+        number: whatsapp.number,
+      },
+      data: {
+        status: "error",
+      },
+    });
+  });
+
+  client.on("message_create", onMessage(whatsapp.number, client));
+
+  await client.initialize();
+}
+
 const onMessage =
-  (number?: string) =>
-  async ({ key, message, sessionId }: whatsapp.MessageReceived) => {
-    const jid = key.remoteJid;
-    const msg = message?.extendedTextMessage?.text || message?.conversation;
-
-    const interruptVerification =
-      !jid || key?.fromMe || key?.remoteJid?.includes("status") || !msg;
-
-    const isSameNumber = !number || number === sessionId;
-
-    if (interruptVerification || !isSameNumber) {
-      return;
-    }
+  (number: string, whatsapp: Client) =>
+  async (message: Message) => {
 
     const chatbot = await prisma.chatbot.findFirst({
       include: {
         whatsapps: {
           where: {
-            number: sessionId,
+            number: number,
           },
         },
         conversations: {
           where: {
-            to: jid,
+            to: message.from,
           },
           include: {
             messages: {
@@ -144,11 +105,7 @@ const onMessage =
     }
 
     if (!conversation) {
-      await whatsapp.sendTextMessage({
-        sessionId: sessionId,
-        to: jid,
-        text: `Olá, tudo bem? Como posso te ajudar?`,
-      });
+      await whatsapp.sendMessage(message.from, `Olá, tudo bem? Como posso te ajudar?`);
 
       conversation = await prisma.conversation.create({
         data: {
@@ -206,11 +163,14 @@ const onMessage =
       },
     });
 
-    await prisma.message.create({
+    prisma.message.create({
       data: {
         message: msg,
         answer: response,
         conversationId: conversation.id,
       },
     });
+
+    const usage = new UsageHandler(chatbot.userId);
+    usage.updateMessageUsage();
   };

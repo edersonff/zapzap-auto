@@ -23,11 +23,11 @@ function NavbarItem({
           <Image
             src="/merlin/logo.svg"
             alt="Logo"
-            width={28}
-            height={28}
+            width={40}
+            height={40}
             layout="fixed"
           />
-          <h2 className="font-title font-bold text-primary-home">Zap Auto</h2>
+          <h2 className="font-title font-bold text-logo">Zap Auto</h2>
         </Link>
         <div className="flex items-center gap-6">
           <Link

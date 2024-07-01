@@ -68,6 +68,8 @@ const config: Config = {
         danger: "#D34053",
         warning: "#FFA70B",
 
+        logo: "#5565cd",
+
         "primary-home": "#171F38",
         "secondary-home": "#25D366",
 
@@ -210,6 +212,7 @@ const config: Config = {
         270: "67.5rem",
         280: "70rem",
         292.5: "73.125rem",
+        ...mainSizes,
       },
       maxHeight: {
         35: "8.75rem",
@@ -363,7 +366,7 @@ const config: Config = {
       },
       screens: {
         big: [{ min: "1024px" }, { min: "1280px" }],
-        small: [{ max: "1023px" }],
+        small: [{ max: "767px" }],
       },
       fontFamily: {
         text: ["var(--font-inter)"],

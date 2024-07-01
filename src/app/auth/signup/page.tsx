@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/Image";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 
 import { Metadata } from "next";
@@ -30,9 +30,11 @@ const SignUp: React.FC = () => {
     register,
     handleSubmit,
     watch,
-
+    setValue,
     formState: { errors },
   } = useForm<Inputs>({});
+
+  console.log({ errors });
 
   async function onSubmit(inputs: Inputs) {
     await authService.signup(inputs);
@@ -55,22 +57,22 @@ const SignUp: React.FC = () => {
               <Link className="mb-5.5 inline-block" href="/dashboard">
                 <Image
                   className="hidden dark:block"
-                  src={"/merlin/logo.svg"}
+                  src={"/merlin/logo-horizontal.png"}
                   alt="Logo"
                   width={176}
                   height={32}
                 />
                 <Image
                   className="dark:hidden"
-                  src={"/merlin/logo.svg"}
+                  src={"/merlin/logo-horizontal.png"}
                   alt="Logo"
                   width={176}
                   height={32}
                 />
               </Link>
-              <p className="2xl:px-20 text-sm">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit
-                suspendisse.
+              <p className="2xl:px-20 text-small">
+                Registre-se para conectar o seu <b>Whatsapp</b> a <b>IA</b> e
+                automatizar o atendimento ao cliente.
               </p>
 
               <span className="mt-15 inline-block">
@@ -201,10 +203,10 @@ const SignUp: React.FC = () => {
           <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
             <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
               <span className="mb-1.5 block text-sm font-medium">
-                Start for free
+                Inicie gratuitamente
               </span>
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-                Sign Up to TailAdmin
+                Crie sua conta na Zap Auto
               </h2>
 
               <form onSubmit={handleSubmit(onSubmit)}>
@@ -213,8 +215,11 @@ const SignUp: React.FC = () => {
                     type: "text",
                     placeholder: "Preencha seu nome",
                     ...register("name", { required: true }),
+                    onChange: (e) => {
+                      setValue("name", e.target.value);
+                    },
                   }}
-                  label="Name"
+                  label="Nome"
                   Icon={FiUser}
                 />
 
@@ -223,6 +228,9 @@ const SignUp: React.FC = () => {
                     type: "email",
                     placeholder: "Preencha seu email",
                     ...register("email", { required: true }),
+                    onChange: (e) => {
+                      setValue("email", e.target.value);
+                    },
                   }}
                   label="Email"
                   Icon={MdOutlineMailOutline}
@@ -232,9 +240,13 @@ const SignUp: React.FC = () => {
                   input={{
                     type: "tel",
                     placeholder: "Preencha seu telefone",
+                    mask: "(99) 99999-9999",
                     ...register("phone", { required: true }),
+                    onChange: (e) => {
+                      setValue("phone", e.target.value);
+                    },
                   }}
-                  label="Phone"
+                  label="Telefone/Celular"
                   Icon={MdPhone}
                 />
 
@@ -243,15 +255,18 @@ const SignUp: React.FC = () => {
                     type: "password",
                     placeholder: "Preencha sua senha",
                     ...register("password", { required: true }),
+                    onChange: (e) => {
+                      setValue("password", e.target.value);
+                    },
                   }}
-                  label="Password"
+                  label="Senha"
                   Icon={MdOutlineLock}
                 />
 
-                <div className="mb-5 mt-2">
+                <div className="mb-5 mt-4">
                   <input
                     type="submit"
-                    value="Create account"
+                    value="Criar conta"
                     className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                   />
                 </div>
@@ -294,14 +309,17 @@ const SignUp: React.FC = () => {
                       </defs>
                     </svg>
                   </span>
-                  Sign up with Google
+                  <span>Registre-se com o Google</span>
                 </button>
 
                 <div className="mt-6 text-center text-sm">
                   <p>
-                    Already have an account?{" "}
-                    <Link href="/auth/signin" className="text-primary">
-                      Sign in
+                    Já tem uma conta?{" "}
+                    <Link
+                      href="/auth/signin"
+                      className="text-primary font-semibold"
+                    >
+                      Faça login
                     </Link>
                   </p>
                 </div>

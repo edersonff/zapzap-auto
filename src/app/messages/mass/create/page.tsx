@@ -111,6 +111,7 @@ function BulkForm() {
 11999999998
 48999999997
 47999999996`,
+            maxLength: 65535,
             ...register("bulk-numbers", {
               required: "Campo obrigatório",
             }),
@@ -126,6 +127,7 @@ Olá {nome}, tudo bem? Aqui é da empresa Merlin, estamos entrando em contato pa
             defaultValue: `Olá {nome}, tudo bem? \nAqui é da empresa, estamos entrando em contato para informar ...`,
             ...register("bulk-message", {
               required: "Campo obrigatório",
+              maxLength: 65535,
             }),
           }}
           className="min-h-[200px]"

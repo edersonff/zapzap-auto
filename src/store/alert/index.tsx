@@ -19,11 +19,9 @@ const alertStore = persist<AlertStore>(
       set((state) => ({
         alerts: [...state.alerts, alert],
       }));
-      setTimeout(() => {
-        set((state) => ({
-          alerts: state.alerts.filter((e) => e !== alert),
-        }));
-      }, 5000);
+      set((state) => ({
+        alerts: state.alerts.filter((e) => e !== alert),
+      }));
     },
     popAlert: (alert) => {
       set((state) => ({

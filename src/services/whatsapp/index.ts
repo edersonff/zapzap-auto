@@ -11,6 +11,6 @@ export const whatsappService = {
   create: async (whatsapp: Partial<Whatsapp>) =>
     await api.post<{ qr: string }>("/whatsapp", whatsapp),
   update: async (whatsapp: Partial<Whatsapp>) =>
-    await api.put<string>("/whatsapp", whatsapp),
+    await api.put<string>("/whatsapp/" + whatsapp.id, whatsapp),
   delete: async (id: number) => await api.delete<string>(`/whatsapp/${id}`),
 };

@@ -1,33 +1,18 @@
 "use client";
 
+import useColorMode from "@/hooks/useColorMode";
 import {
   Drawer as JoyDrawer,
-  AspectRatio,
-  Box,
   Button,
-  Card,
-  CardContent,
-  Checkbox,
   DialogContent,
   DialogTitle,
   Divider,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  List,
-  ListItem,
   ModalClose,
-  Radio,
-  RadioGroup,
   Sheet,
   Stack,
-  Switch,
-  Typography,
 } from "@mui/joy";
-import React, { EventHandler, useState } from "react";
-import { FaHome, FaHotel, FaHouseUser } from "react-icons/fa";
-import { IoMdDoneAll } from "react-icons/io";
-import { MdApartment } from "react-icons/md";
+import colors from "tailwindcss/colors";
+import React, { EventHandler } from "react";
 
 export default function Drawer({
   open,
@@ -42,9 +27,6 @@ export default function Drawer({
   onConfirm: EventHandler<any>;
   children: React.ReactNode;
 }) {
-  const [type, setType] = useState<string | null>(null);
-  const [amenities, setAmenities] = useState<number[]>([]);
-
   return (
     <JoyDrawer
       size="md"
@@ -72,8 +54,11 @@ export default function Drawer({
           height: "100%",
           overflow: "auto",
         }}
+        className="dark:bg-boxdark"
       >
-        <DialogTitle>{title}</DialogTitle>
+        <DialogTitle>
+          <h2 className="text-black dark:text-white">{title}</h2>
+        </DialogTitle>
         <ModalClose />
         <Divider sx={{ mt: "auto" }} />
         <DialogContent sx={{ gap: 2 }}>
@@ -247,10 +232,10 @@ export default function Drawer({
           useFlexGap
           spacing={1}
         >
-          <Button variant="outlined" color="neutral" onClick={onConfirm}>
+          <Button variant="outlined" color="neutral" onClick={onClose}>
             Cancelar
           </Button>
-          <Button onClick={onClose}>Salvar alterações</Button>
+          <Button onClick={onConfirm}>Salvar alterações</Button>
         </Stack>
       </Sheet>
     </JoyDrawer>

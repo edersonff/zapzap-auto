@@ -4,13 +4,11 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Input, { Select, Textarea } from "@/components/Input";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { useGetChatbotsQuery } from "@/services/chatbot/getChatbotQuery";
-import Link from "next/link";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FiPhone } from "react-icons/fi";
 import { RiRobot2Line } from "react-icons/ri";
 import { QRCodeCanvas } from "qrcode.react";
 import { whatsappService } from "@/services/whatsapp";
-import Loader from "@/components/common/Loader";
 import { useForm } from "react-hook-form";
 import { useAlertStore } from "@/store/alert";
 import { chatbotService } from "@/services/chatbot";
@@ -192,6 +190,7 @@ export default function WhatsappConnectCreate() {
                       required: true,
                       onChange: (e) => setValue("about", e.target.value),
                       name: "chatbot-about",
+                      maxLength: 65535,
                     }}
                     label="Sobre sua Empresa/Loja"
                     className="min-h-[200px]"
@@ -206,6 +205,7 @@ export default function WhatsappConnectCreate() {
                 `,
                       onChange: (e) => setValue("objectives", e.target.value),
                       name: "chatbot-objectives",
+                      maxLength: 65535,
                     }}
                     label="Qual o objetivo do Chatbot"
                     className="min-h-[200px]"
@@ -221,6 +221,7 @@ export default function WhatsappConnectCreate() {
 - Quando a IA não conseguir responder a pergunta do cliente`,
                       onChange: (e) => setValue("finalize", e.target.value),
                       name: "chatbot-finalize",
+                      maxLength: 65535,
                     }}
                     className="min-h-[200px]"
                     label="Quando a IA deve finalizar a conversa"
@@ -231,7 +232,7 @@ export default function WhatsappConnectCreate() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-9">
+        <div className="flex flex-col gap-9 flex-1">
           {/* <!-- Sign In Form --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke px-6.5 py-4 dark:border-strokedark">
@@ -308,7 +309,7 @@ function WhatsappForm({
     const chatbotId = chatbot.current?.value ? +chatbot.current?.value : null;
 
     const { data } = await whatsappService.create({
-      number: phone,
+      number: phone.replace(/\D/g, ""),
       chatbotId,
     });
 

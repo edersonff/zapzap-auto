@@ -8,9 +8,10 @@ import { queryClient } from "@/provider/react-query";
 import { conversationService } from "@/services/conversation";
 import { useGetConversationsQuery } from "@/services/conversation/getConversationQuery";
 import { statusColorsWithBg, statusLabels } from "@/utils/status";
-import { IconButton, Tooltip } from "@mui/joy";
+import { CircularProgress, IconButton, Tooltip } from "@mui/joy";
 import { Conversation } from "@prisma/client";
 import { DateTime } from "luxon";
+import Image from "@/components/Image";
 import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
 import { FaTrash } from "react-icons/fa";
@@ -41,7 +42,7 @@ export default function ConversationWhatsapp() {
     if (conversation.chatbotId) {
       return "A partir do Chatbot - " + conversation.chatbotId;
     }
-    return "A partir do Agendamento - " + conversation.BulkId;
+    return "A partir do Agendamento - " + conversation.bulkId;
   }, []);
 
   return (
@@ -123,25 +124,10 @@ export default function ConversationWhatsapp() {
                             >
                               <IconButton variant="outlined" className="group">
                                 <Link
-                                  href={`/whatsapp/connect/${conversation.id}`}
+                                  href={`/whatsapp/conversation/${conversation.id}`}
                                   className="group-hover:text-success"
                                 >
                                   <IoEye />
-                                </Link>
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip
-                              title="Editar"
-                              size="sm"
-                              color="primary"
-                              variant="soft"
-                            >
-                              <IconButton variant="outlined" className="group">
-                                <Link
-                                  href={`/whatsapp/connect/${conversation.id}/edit`}
-                                  className="group-hover:text-primary"
-                                >
-                                  <MdEdit />
                                 </Link>
                               </IconButton>
                             </Tooltip>
@@ -172,6 +158,36 @@ export default function ConversationWhatsapp() {
                 </table>
               </div>
             </div>
+
+            {!isLoading && data?.conversations?.length === 0 && (
+              <div className="flex-1 flex-center py-16">
+                <div className="bg-gray-2 text-center dark:bg-meta-4 p-10 rounded-md">
+                  <Image
+                    src="/images/undraw/messages.svg"
+                    width={200}
+                    height={200}
+                    alt="Conversas Ilustração"
+                    className="mx-auto"
+                  />
+                  <div className="flex flex-col gap-2 items-center mt-10 w-full max-w-[500px]">
+                    <h4 className="text-xl font-semibold text-black dark:text-white">
+                      Nenhuma Conversa Encontrada
+                    </h4>
+                    <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-5">
+                      Parece que você ainda não possui nenhuma conversa
+                      cadastrada. Cadastre um Whatsapp para começar a conversar
+                      com seus clientes.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {isLoading && (
+              <div className="flex-1 flex-center">
+                <CircularProgress />
+              </div>
+            )}
           </div>
           <Pagination
             page={page}

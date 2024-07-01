@@ -5,27 +5,25 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { useGetWhatsappsQuery } from "@/services/whatsapp/getWhatsappQuery";
 import { statusColors, statusColorsWithBg, statusLabels } from "@/utils/status";
 import InputMask from "react-input-mask";
-import Image from "next/image";
 import Link from "next/link";
-import { IconButton, Tooltip } from "@mui/joy";
+import { CircularProgress, IconButton, Tooltip } from "@mui/joy";
 import { FaTrash } from "react-icons/fa";
 import { IoEye } from "react-icons/io5";
 import { MdEdit } from "react-icons/md";
 import Pagination from "@/components/Pagination";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Modal from "@/components/Modal";
 import { whatsappService } from "@/services/whatsapp";
 import { queryClient } from "@/provider/react-query";
 import Drawer from "@/components/Drawer";
 import { useGetChatbotsQuery } from "@/services/chatbot/getChatbotQuery";
 import { useAlertStore } from "@/store/alert";
-import { useForm } from "react-hook-form";
-import { chatbotService } from "@/services/chatbot";
 import Input, { Select } from "@/components/Input";
 import { RiRobot2Line } from "react-icons/ri";
 import { FiPhone } from "react-icons/fi";
 import { Whatsapp } from "@prisma/client";
 import { QRCodeCanvas } from "qrcode.react";
+import Image from "@/components/Image";
 
 const LIMIT = 15;
 
@@ -183,6 +181,42 @@ export default function ConnectWhatsapp() {
                 </table>
               </div>
             </div>
+
+            {!isLoading && data?.whatsapps?.length === 0 && (
+              <div className="flex-1 flex-center py-16">
+                <div className="bg-gray-2 text-center dark:bg-meta-4 p-10 rounded-md">
+                  <Image
+                    src="/images/undraw/chatting.svg"
+                    width={200}
+                    height={200}
+                    alt="Conversando Ilustração"
+                    className="mx-auto"
+                  />
+                  <div className="flex flex-col gap-2 items-center mt-10 w-full max-w-[500px]">
+                    <h4 className="text-xl font-semibold text-black dark:text-white">
+                      Nenhum Whatsapp encontrado
+                    </h4>
+                    <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-5">
+                      Não encontramos nenhum Whatsapp cadastrado. Crie um novo
+                      Whatsapp para começar a enviar e receber mensagens.
+                    </p>
+
+                    <Link
+                      href="/whatsapp/connect/create"
+                      className="inline-flex items-center text-sm font-bold justify-center bg-primary px-6 py-2.5  text-white hover:bg-opacity-90"
+                    >
+                      Crie agora
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {isLoading && (
+              <div className="flex-1 flex-center">
+                <CircularProgress />
+              </div>
+            )}
           </div>
 
           <Pagination
@@ -203,22 +237,33 @@ export default function ConnectWhatsapp() {
         description="Deseja realmente excluir essa conversa?"
       />
 
-      <UpdateWhatsapp editing={editing} setEditing={setEditing} />
+      <UpdateWhatsapp
+        editing={editing}
+        setEditing={setEditing}
+        onUpdated={async () => {
+          await queryClient.invalidateQueries({
+            queryKey: ["whatsapps", { page: page, limit: LIMIT }],
+          });
+        }}
+      />
     </DefaultLayout>
   );
 }
 
-async function UpdateWhatsapp({
+function UpdateWhatsapp({
   editing,
   setEditing,
+  onUpdated,
 }: {
   editing: Whatsapp | null;
   setEditing: (value: Whatsapp | null) => void;
+  onUpdated?: () => Promise<void> | void;
 }) {
+  const [isGeneratingQrCode, setIsGeneratingQrCode] = useState(false);
+  const [qrCode, setQrCode] = useState<string | null>(null);
+
   const chatbotRef = useRef<HTMLSelectElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
-  const [qrCode, setQrCode] = useState<string | null>(null);
-  const [body, setBody] = useState<any>();
 
   const { data: chatbots, isLoading } = useGetChatbotsQuery({
     page: 1,
@@ -226,7 +271,7 @@ async function UpdateWhatsapp({
 
   const pushAlert = useAlertStore((state) => state.pushAlert);
 
-  async function handleGenerateQrCode() {
+  async function handleUpdate() {
     const phone = phoneRef.current?.value.replaceAll(/\D/g, "");
 
     if (!phone) {
@@ -251,23 +296,35 @@ async function UpdateWhatsapp({
       ? +chatbotRef.current?.value
       : null;
 
-    const { data } = await whatsappService.create({
+    await whatsappService.update({
+      id: editing?.id,
       number: phone,
       chatbotId,
     });
 
-    setBody({
-      number: phone,
-      chatbotId,
+    await onUpdated?.();
+
+    pushAlert({
+      message: "Whatsapp atualizado com sucesso",
+      status: 200,
     });
 
-    setQrCode(data.qr);
+    setEditing(null);
   }
 
   async function updateQrCode() {
-    const { data } = await whatsappService.create(body);
+    if (isGeneratingQrCode) return;
+
+    setIsGeneratingQrCode(true);
+
+    const { data } = await whatsappService.create({
+      number: phoneRef.current?.value,
+      chatbotId: Number(chatbotRef.current?.value),
+    });
 
     setQrCode(data.qr);
+
+    setIsGeneratingQrCode(false);
   }
 
   const chatbotsOptions = useMemo(() => {
@@ -281,8 +338,6 @@ async function UpdateWhatsapp({
     return chatbotsMap;
   }, [chatbots]);
 
-  if (editing === null) return null;
-
   return (
     <Drawer
       open={editing !== null}
@@ -291,70 +346,84 @@ async function UpdateWhatsapp({
         setEditing(null);
         setQrCode(null);
       }}
-      onConfirm={() => {
-        updateQrCode();
-        setEditing(null);
-      }}
+      onConfirm={handleUpdate}
     >
-      <form
-        action="#"
-        className="flex flex-col justify-between h-full px-4 py-4"
-      >
-        <div>
-          <Select
-            options={[
-              { value: "", label: "Selecione o Chatbot" },
-              ...chatbotsOptions,
-            ]}
-            label="Selecione o Chatbot"
-            Icon={RiRobot2Line}
-            innerRef={chatbotRef}
-            defaultValue={String(editing.chatbotId)}
-          />
-          <Input
-            input={{
-              type: "text",
-              placeholder: "Número do Whatsapp",
-              ref: phoneRef,
-              mask: "(99) 99999-9999",
-              defaultValue: editing.number,
-            }}
-            className="w-full"
-            Icon={FiPhone}
-            label="Número"
-          />
-        </div>
+      {editing && (
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
 
-        <div>
-          <div className="flex-1 text-sm font-medium flex-center gap-2 mb-6">
-            <p className="text-sm text-black dark:text-white">Status: </p>
-            <p
-              className={`inline-flex rounded-full bg-opacity-10 px-5 py-1 text-sm font-medium ${
-                statusColorsWithBg[editing.status]
-              }`}
-            >
-              {statusLabels[editing.status]}
-            </p>
+            await handleUpdate();
+          }}
+          className="flex flex-col justify-between h-full px-4 py-4"
+        >
+          <div>
+            <Select
+              options={[
+                { value: "", label: "Selecione o Chatbot" },
+                ...chatbotsOptions,
+              ]}
+              label="Selecione o Chatbot"
+              Icon={RiRobot2Line}
+              innerRef={chatbotRef}
+              defaultValue={String(editing.chatbotId)}
+            />
+            <Input
+              input={{
+                type: "text",
+                placeholder: "Número do Whatsapp",
+                ref: phoneRef,
+                mask: "(99) 99999-9999",
+                defaultValue: editing.number,
+                disabled: true,
+              }}
+              className="w-full"
+              Icon={FiPhone}
+              label="Número"
+            />
           </div>
 
-          <div className="flex-center mb-6">
-            <div className="bg-neutral-100 w-64 h-64 flex items-center justify-center">
-              <p className="text-sm text-black dark:text-white">
-                QR Code do Whatsapp
+          <div>
+            <div className="flex-1 text-sm font-medium flex-center gap-2 mb-6">
+              <p className="text-sm text-black dark:text-white">Status: </p>
+              <p
+                className={`inline-flex rounded-full bg-opacity-10 px-5 py-1 text-sm font-medium ${
+                  statusColorsWithBg[
+                    String(editing.status) as keyof typeof statusColors
+                  ]
+                }`}
+              >
+                {
+                  statusLabels[
+                    String(editing.status) as keyof typeof statusLabels
+                  ]
+                }
               </p>
-              {/* <div className="h-16 w-16 animate-spin rounded-full border-4 border-solid border-primary border-t-transparent" /> */}
             </div>
-            {/* <QRCodeCanvas value={""} size={256} /> */}
-          </div>
 
-          <button
-            type="submit"
-            className="small:w-full w-[50%] flex justify-center mx-auto rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
-          >
-            Gerar QR Code
-          </button>
-        </div>
-      </form>
+            <div className="flex-center mb-6">
+              {!qrCode ? (
+                <div className="bg-neutral-100 w-64 h-64 flex items-center justify-center dark:bg-boxdark-2">
+                  <p className="text-sm text-black dark:text-white">
+                    QR Code do Whatsapp
+                  </p>
+                </div>
+              ) : (
+                <QRCodeCanvas value={qrCode} size={256} />
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={updateQrCode}
+              disabled={isGeneratingQrCode}
+              className="small:w-full w-[50%] flex justify-center mx-auto rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
+            >
+              Gerar QR Code
+            </button>
+          </div>
+        </form>
+      )}
     </Drawer>
   );
 }

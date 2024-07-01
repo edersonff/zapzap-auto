@@ -7,12 +7,16 @@ import Footer from "@/components/Footer";
 import Image from "@/components/Image";
 import Navbar from "@/components/Navbar";
 import Step from "@/components/Step";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { FaClock, FaWhatsappSquare } from "react-icons/fa";
 import { MdOutlineChatBubble } from "react-icons/md";
 import { RiRobot2Fill } from "react-icons/ri";
 import { TbFileDescription } from "react-icons/tb";
 export default function Home() {
+  const { push } = useRouter();
+
   return (
     <div className="bg-white">
       <div className="bg-neutral-100 pt-11">
@@ -32,10 +36,22 @@ export default function Home() {
                 forma automática e gerar mais vendas.
               </p>
               <div className="flex gap-7">
-                <Button className="big:min-w-main-3 small:flex-1">
+                <Button
+                  onClick={() => push("/auth/signup")}
+                  className="big:min-w-main-3 small:flex-1"
+                >
                   Melhore seu Whatsapp{" "}
                 </Button>
-                <ButtonOutlined className="big:min-w-main-2 small:flex-1">
+                <ButtonOutlined
+                  onClick={() => {
+                    const section = document.querySelector("#faq");
+                    section?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                    });
+                  }}
+                  className="big:min-w-main-2 small:flex-1"
+                >
                   Saiba Mais
                 </ButtonOutlined>
               </div>
@@ -63,7 +79,9 @@ export default function Home() {
               height={18}
             />
           </h2>
-          <Button className="min-w-main-4">Melhore seu Whatsapp</Button>
+          <Button className="min-w-main-4" onClick={() => push("/auth/signup")}>
+            Melhore seu Whatsapp
+          </Button>
           <Image src="/images/svg/fun.svg" alt="Fun" width={90} height={90} />
         </div>
       </div>
@@ -87,18 +105,27 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="flex gap-20">
+          <div className="flex gap-20 small:gap-10 small:flex-col small:w-full">
             <Step
               number={1}
               title="Emparelhar telefone"
               others={
-                <Image
-                  src="/images/svg/arrow-green.svg"
-                  className="undraggable cursor-default absolute -top-2 -right-[70px]"
-                  alt="Seta apontando para a direita"
-                  width={70}
-                  height={70}
-                />
+                <>
+                  <Image
+                    src="/images/svg/arrow-green.svg"
+                    className="undraggable cursor-default absolute -top-2 -right-[70px] small:hidden z-999"
+                    alt="Seta apontando para a direita"
+                    width={70}
+                    height={70}
+                  />
+                  <Image
+                    src="/images/svg/arrow-green.svg"
+                    className="undraggable cursor-default absolute -bottom-7 right-0 rotate-90 big:hidden z-999"
+                    alt="Seta apontando para a direita"
+                    width={70}
+                    height={70}
+                  />
+                </>
               }
             >
               Emparelhe o telefone digitalizando um <b>código QR</b> para
@@ -109,13 +136,22 @@ export default function Home() {
               number={2}
               title="Mande mensagens"
               others={
-                <Image
-                  src="/images/svg/dashed-arrow-green.svg"
-                  className="undraggable cursor-default absolute bottom-4 -right-[75px] -rotate-4"
-                  alt="Seta tracejada apontando para a direita"
-                  width={70}
-                  height={70}
-                />
+                <>
+                  <Image
+                    src="/images/svg/dashed-arrow-green.svg"
+                    className="undraggable cursor-default absolute bottom-4 -right-[75px] -rotate-4 small:hidden z-999"
+                    alt="Seta tracejada apontando para a direita"
+                    width={70}
+                    height={70}
+                  />
+                  <Image
+                    src="/images/svg/dashed-arrow-green.svg"
+                    className="undraggable cursor-default absolute -bottom-12.5 -left-1 rotate-[115deg] big:hidden z-999"
+                    alt="Seta tracejada apontando para a direita"
+                    width={70}
+                    height={70}
+                  />
+                </>
               }
             >
               Emparelhe o telefone digitalizando um <b>código QR</b> para
@@ -155,7 +191,7 @@ export default function Home() {
               <Image
                 src="/images/svg/check.svg"
                 alt="Check"
-                className="absolute top-10 -right-12"
+                className="absolute top-10 -right-12 small:right-0"
                 width={52}
                 height={52}
               />
@@ -290,25 +326,27 @@ export default function Home() {
                 />
               </div>
             </div>
-            <script
-              async
-              src="https://js.stripe.com/v3/pricing-table.js"
-            ></script>
-            <div className="w-full">
-              {/* @ts-ignore */}
-              <stripe-pricing-table
-                pricing-table-id="prctbl_1PBMKmEOAFNfGEYTZerLjFys"
-                publishable-key="pk_test_51OqhbzEOAFNfGEYTahUQd21pe17i5WB0t8GNkmNffJgXmGoDhV9AfRl9YTHBZ0isn1Vbwa8LvyFD8lxAGHcOQBa300knzOjXlF"
-              >
-                {/* @ts-ignore */}
-              </stripe-pricing-table>
+            <div className="w-full relative">
+              <iframe
+                style={{
+                  display: "block",
+                  margin: "0px",
+                  padding: "0px",
+                  border: "medium",
+                  width: "100%",
+                  transition: "height 0.01s linear",
+                }}
+                className="sm:h-[462px] h-[900px] w-full"
+                scrolling="no"
+                src="/pricing/page.html"
+              ></iframe>
             </div>
           </div>
         </div>
       </div>
       <div className="w-full my-24">
-        <div className="content">
-          <div className="flex-center flex-col text-primary-home">
+        <div className="content" id="faq">
+          <div className="flex-center  flex-col text-primary-home">
             <div className="text-center relative mb-20">
               <p className="text-small font-medium">Perguntas frequentes</p>
               <h2 className="text-[26px] font-bold">

@@ -1,34 +1,35 @@
-import { Bulk, Whatsapp } from "@prisma/client";
+import { Bulk, Prisma, Whatsapp } from "@prisma/client";
 import * as whatsapp from "wa-sockets";
-import { makeChatsSocket } from "@whiskeysockets/baileys/lib/Socket/chats";
+import { WASocket } from "@whiskeysockets/baileys";
 import {
   BinaryNode,
   S_WHATSAPP_NET,
   getBinaryNodeChild,
   getBinaryNodeChildren,
 } from "@whiskeysockets/baileys/lib/WABinary";
+import WABinary_1 from "@whiskeysockets/baileys/lib/WABinary";
+
 
 const formatStatus = {
   active: "Ativo",
   inactive: "Inativo",
 };
-
-export class Message {
+export class MessageHandler {
+  private session: WASocket | undefined;
   private message: string;
   constructor(
-    private bulk: Bulk & { whatsapp: Whatsapp },
+    private bulk: Prisma.BulkUncheckedCreateInput & { whatsapp: Whatsapp },
     private number: string
   ) {
     this.message = bulk.message;
   }
 
-  private async formatMessage() {
-    const session = whatsapp.getSession(this.bulk.whatsapp.number);
-
-    const result = await session?.query({
+  private async interactiveQuery(userNodes: any, queryNode: any) {
+    console.log({ userNodes, queryNode });
+    const result = await this.session?.query({
       tag: "iq",
       attrs: {
-        to: S_WHATSAPP_NET,
+        to: WABinary_1.S_WHATSAPP_NET,
         type: "get",
         xmlns: "usync",
       },
@@ -36,7 +37,7 @@ export class Message {
         {
           tag: "usync",
           attrs: {
-            sid: session.generateMessageTag(),
+            sid: this.session.generateMessageTag(),
             mode: "query",
             last: "true",
             index: "0",
@@ -46,35 +47,62 @@ export class Message {
             {
               tag: "query",
               attrs: {},
-              content: [
-                { tag: "name", attrs: {} },
-                { tag: "notify", attrs: {} },
-                { tag: "status", attrs: {} },
-              ],
+              content: [queryNode],
             },
             {
               tag: "list",
               attrs: {},
-              content: [{ tag: "user", attrs: { jid: this.number } }],
+              content: userNodes,
             },
           ],
         },
       ],
     });
 
-    const usyncNode = getBinaryNodeChild(result, "usync");
-    const listNode = getBinaryNodeChild(usyncNode, "list");
-    const users = getBinaryNodeChildren(listNode, "user");
-    const [name, notify, status] = [
-      getBinaryNodeChild(users[0], "name"),
-      getBinaryNodeChild(users[0], "notify"),
-      getBinaryNodeChild(users[0], "status"),
+    console.log({ result });
+
+    const usyncNode = (0, WABinary_1.getBinaryNodeChild)(result, "usync");
+    const listNode = (0, WABinary_1.getBinaryNodeChild)(usyncNode, "list");
+    const users = (0, WABinary_1.getBinaryNodeChildren)(listNode, "user");
+    return users;
+  }
+
+  private async formatMessage() {
+    if (!this.session) {
+      throw new Error("Sessão não encontrada");
+    }
+
+    const query = { tag: "contact", attrs: {} };
+    const list = [
+      {
+        tag: "user",
+        attrs: {},
+        content: [
+          {
+            tag: "contact",
+            attrs: {},
+            content: this.number,
+          },
+        ],
+      },
     ];
 
+    console.log({ list, query });
+    const results = await this.interactiveQuery(list, query);
+
     console.log(
-      this.number,
-      `Name: ${name?.content}, Notify: ${notify?.content}, Status: ${status?.content}`
+      results.map((result) => {
+        const contact = getBinaryNodeChild(result, "contact");
+        const name = getBinaryNodeChild(contact, "name");
+        const status = getBinaryNodeChild(contact, "status");
+        return {
+          name: name?.content,
+          status: status?.content,
+        };
+      })
     );
+
+    throw new Error("Not implemented");
 
     const message = this.bulk.message
       .replace(`{nome_salvo}`, String(name?.content))
@@ -87,11 +115,31 @@ export class Message {
   }
 
   async send() {
-    await this.formatMessage();
-    const session = whatsapp.getSession(this.bulk.whatsapp.number);
+    this.session = (await whatsapp.startSession(
+      this.bulk.whatsapp.number
+    )) as WASocket;
 
-    await session?.sendMessage(this.number, {
+    await whatsapp.loadSessionsFromStorage();
+    console.log("Sending message to", this.number);
+
+    await this.formatMessage();
+
+    await this.session?.sendMessage(this.number, {
       text: this.message,
+      buttons: [
+        {
+          buttonId: "1",
+          buttonText: {
+            displayText: "Sim",
+          },
+        },
+        {
+          buttonId: "2",
+          buttonText: {
+            displayText: "Não",
+          },
+        },
+      ],
     });
   }
 }

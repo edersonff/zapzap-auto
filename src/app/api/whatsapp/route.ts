@@ -73,6 +73,7 @@ export async function POST(req: NextRequest) {
   if (whatsappFound) {
     switch (whatsappFound.status) {
       case "inactive":
+      case "error":
         const qr = await initWhatsappListeners(number);
 
         await prisma.whatsapp.update({

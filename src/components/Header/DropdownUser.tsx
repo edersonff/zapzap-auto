@@ -1,12 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/Image";
 import { useSession } from "next-auth/react";
 import { FaRegUser } from "react-icons/fa6";
 import { BiExit } from "react-icons/bi";
+import { useRouter } from "next/navigation";
 
 const DropdownUser = () => {
-  const { data: session } = useSession();
+  const { push } = useRouter();
+  const { data: session } = useSession({
+    required: true,
+    onUnauthenticated() {
+      push("/auth/signin");
+    },
+  });
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const trigger = useRef<any>(null);
