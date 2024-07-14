@@ -9,7 +9,6 @@ import {
 } from "@whiskeysockets/baileys/lib/WABinary";
 import WABinary_1 from "@whiskeysockets/baileys/lib/WABinary";
 
-
 const formatStatus = {
   active: "Ativo",
   inactive: "Inativo",
@@ -104,14 +103,14 @@ export class MessageHandler {
 
     throw new Error("Not implemented");
 
-    const message = this.bulk.message
-      .replace(`{nome_salvo}`, String(name?.content))
-      .replace(`{nome}`, String(notify?.content))
-      .replace(`{numero}`, this.number);
+    // const message = this.bulk.message
+    //   .replace(`{nome_salvo}`, String(name?.content))
+    //   .replace(`{nome}`, String(notify?.content))
+    //   .replace(`{numero}`, this.number);
 
-    this.message = message;
+    // this.message = message;
 
-    return message;
+    // return message;
   }
 
   async send() {

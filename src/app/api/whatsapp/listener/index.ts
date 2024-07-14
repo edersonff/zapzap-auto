@@ -67,9 +67,7 @@ async function startWhatsappListener(whatsapp: { number: string }) {
 }
 
 const onMessage =
-  (number: string, whatsapp: Client) =>
-  async (message: Message) => {
-
+  (number: string, whatsapp: Client) => async (message: Message) => {
     const chatbot = await prisma.chatbot.findFirst({
       include: {
         whatsapps: {
@@ -104,55 +102,55 @@ const onMessage =
       return;
     }
 
-    if (!conversation) {
-      await whatsapp.sendMessage(message.from, `Olá, tudo bem? Como posso te ajudar?`);
+    // if (!conversation) {
+    //   await whatsapp.sendMessage(message.from, `Olá, tudo bem? Como posso te ajudar?`);
 
-      conversation = await prisma.conversation.create({
-        data: {
-          to: jid,
-          whatsappId: chatWhastapp.id,
-          chatbotId: chatbot.id,
-          userId: chatbot.userId,
-        },
-      });
-    }
+    //   conversation = await prisma.conversation.create({
+    //     data: {
+    //       to: jid,
+    //       whatsappId: chatWhastapp.id,
+    //       chatbotId: chatbot.id,
+    //       userId: chatbot.userId,
+    //     },
+    //   });
+    // }
 
-    whatsapp.sendTyping({
-      sessionId: sessionId,
-      to: jid,
-      duration: 3000,
-    });
+    // whatsapp.sendTyping({
+    //   sessionId: sessionId,
+    //   to: jid,
+    //   duration: 3000,
+    // });
 
-    const bot = new ChatBotCreator(chatbot, conversation?.messages || []);
+    // const bot = new ChatBotCreator(chatbot, conversation?.messages || []);
 
-    const response = await bot.generateMessage(msg);
+    // const response = await bot.generateMessage(msg);
 
-    if (response === "action.finalize") {
-      await prisma.conversation.update({
-        where: {
-          id: conversation.id,
-        },
-        data: {
-          finilizedAt: new Date(),
-        },
-      });
+    // if (response === "action.finalize") {
+    //   await prisma.conversation.update({
+    //     where: {
+    //       id: conversation.id,
+    //     },
+    //     data: {
+    //       finilizedAt: new Date(),
+    //     },
+    //   });
 
-      await whatsapp.sendTextMessage({
-        sessionId: sessionId,
-        to: jid,
-        text: "Vamos finalizar a conversa, um atendente irá te responder em breve. \nObrigado por entrar em contato. 🙂",
-        // answering: message?.conversation,
-      } as any);
+    //   await whatsapp.sendTextMessage({
+    //     sessionId: sessionId,
+    //     to: jid,
+    //     text: "Vamos finalizar a conversa, um atendente irá te responder em breve. \nObrigado por entrar em contato. 🙂",
+    //     // answering: message?.conversation,
+    //   } as any);
 
-      return;
-    }
+    //   return;
+    // }
 
-    await whatsapp.sendTextMessage({
-      sessionId: sessionId,
-      to: jid,
-      text: response,
-      // answering: message?.conversation,
-    } as any);
+    // await whatsapp.sendTextMessage({
+    //   sessionId: sessionId,
+    //   to: jid,
+    //   text: response,
+    //   // answering: message?.conversation,
+    // } as any);
 
     await prisma.message.deleteMany({
       where: {
@@ -163,13 +161,13 @@ const onMessage =
       },
     });
 
-    prisma.message.create({
-      data: {
-        message: msg,
-        answer: response,
-        conversationId: conversation.id,
-      },
-    });
+    // prisma.message.create({
+    //   data: {
+    //     message: msg,
+    //     answer: response,
+    //     conversationId: conversation.id,
+    //   },
+    // });
 
     const usage = new UsageHandler(chatbot.userId);
     usage.updateMessageUsage();

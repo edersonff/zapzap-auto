@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/db";
 import { DateTime } from "luxon";
 import { Bulk, BulkType, Whatsapp } from "@prisma/client";
-import { Message } from "../../lib/message";
+import { MessageHandler as Message } from "../../lib/message";
 
 const runEach = 15 * 60;
 

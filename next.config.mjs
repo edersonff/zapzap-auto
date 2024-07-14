@@ -10,7 +10,13 @@ const nextConfig = {
       },
     ],
   },
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, webpack }) => {
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        "process.env.FLUENTFFMPEG_COV": false,
+      })
+    );
+
     if (!isServer) {
       config.resolve = {
         ...config.resolve,
@@ -20,10 +26,12 @@ const nextConfig = {
         },
       };
     }
+
     config.module = {
       ...config.module,
       exprContextCritical: false,
     };
+
     return config;
   },
   experimental: {
