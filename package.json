@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run migrate && next build",
+    "build": "npm run generate && next build",
     "build-compile": "next build experimental-compile",
     "postinstall": "patch-package",
     "generate": "npx prisma generate",
